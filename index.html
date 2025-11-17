@@ -238,11 +238,26 @@
     const darkModeToggle = document.getElementById('darkModeToggle');
     const html = document.documentElement;
     
-    // Check for saved theme preference or default to light mode
+    // Check for saved theme preference or use system preference
     const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'dark') {
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    
+    if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
       html.classList.add('dark');
+    } else if (savedTheme === 'light') {
+      html.classList.remove('dark');
     }
+    
+    // Listen for system theme changes
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+      if (!localStorage.getItem('theme')) {
+        if (e.matches) {
+          html.classList.add('dark');
+        } else {
+          html.classList.remove('dark');
+        }
+      }
+    });
     
     // Toggle dark mode
     darkModeToggle.addEventListener('click', () => {
