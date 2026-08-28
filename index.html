@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>XVue · AI-first property management</title>
-  <meta name="description" content="XVue runs the daily operations of a real estate portfolio: leases and rent, vendor bills, maintenance and dispatch, in one system of record.">
+  <meta name="description" content="XVue runs the daily operations of a real estate portfolio: leases and rent, vendor bills, maintenance and dispatch, and the finances behind them, in one system of record.">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23262220'/%3E%3Ctext x='16' y='22.5' font-family='Helvetica,Arial,sans-serif' font-size='19' font-weight='700' fill='%23faf9f7' text-anchor='middle'%3Ex%3C/text%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -133,13 +133,29 @@
     .cta:active { transform: translateY(1px); }
     .cta svg { transition: transform .18s; }
     .cta:hover svg { transform: translateX(2px); }
-    .contact {
-      font-size: 14px; font-weight: 500; color: var(--muted-foreground);
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 1px;
-      transition: color .15s, border-color .15s;
+    /* Contact as the product's own object: an open work order, dispatched
+       to the team by mail. Styled as a dispatch-log row from the app. */
+    .wo {
+      margin-top: 14px;
+      display: inline-flex; align-items: center; gap: 10px;
+      font-size: 13px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 14px;
+      transition: background .15s, border-color .15s;
     }
-    .contact:hover { color: var(--foreground); border-color: var(--muted-foreground); }
+    .wo:hover { background: var(--accent); }
+    .wo .wo-ref {
+      font-size: 12px; color: var(--muted-foreground);
+      background: var(--muted);
+      border: 1px solid var(--border-soft);
+      padding: 2px 7px; border-radius: 5px;
+    }
+    .wo .wo-title { font-weight: 550; }
+    .wo .wo-to { color: var(--muted-foreground); }
+    .wo .wo-arrow { color: var(--muted-foreground); transition: transform .18s, color .15s; }
+    .wo:hover .wo-arrow { transform: translateX(2px); color: var(--foreground); }
 
     /* ---- The product sheet (signature element) -----------------------
        Not a screenshot: the leases work surface re-rendered at the app's
@@ -219,6 +235,7 @@
       .statement h1 { animation-delay: .05s; }
       .statement .sub { animation-delay: .13s; }
       .statement .cta-row { animation-delay: .21s; }
+      .statement .wo { animation-delay: .29s; }
       .sheet-anim { opacity: 0; animation: rise .7s cubic-bezier(.2,.6,.2,1) .25s forwards; }
       tbody tr { opacity: 0; animation: row-in .45s ease-out forwards; }
       tbody tr:nth-child(1) { animation-delay: .55s; }
@@ -258,14 +275,20 @@
     <section class="shell hero">
       <div class="statement">
         <h1 class="rise">AI&#8209;first property management.</h1>
-        <p class="sub rise"><strong>xvue</strong> runs the daily operations of a real estate portfolio: leases and rent, vendor bills, maintenance and dispatch, in one system of record.</p>
+        <p class="sub rise">Run the daily operations of a real estate portfolio: leases and rent, vendor bills, maintenance and dispatch, and the finances behind them, in one system of record.</p>
         <div class="cta-row rise">
           <a class="cta" href="https://app.xvue.ai">
             Log in to XVue
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
           </a>
-          <a class="contact" href="mailto:hello@xvue.ai">hello@xvue.ai</a>
         </div>
+        <a class="wo rise" href="mailto:hello@xvue.ai?subject=Work%20order%20WO-000001%3A%20Talk%20to%20the%20team">
+          <span class="dot warn" aria-hidden="true"></span>
+          <span class="wo-ref mono">WO-000001</span>
+          <span class="wo-title">Talk to the team</span>
+          <span class="wo-to">hello@xvue.ai</span>
+          <svg class="wo-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
       </div>
 
       <div class="sheet-wrap" aria-hidden="true">
