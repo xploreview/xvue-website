@@ -5,7 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>XVue · AI-first property management</title>
   <meta name="description" content="Run the daily operations of a real estate portfolio: leases and rent, vendor bills, maintenance and dispatch, and the finances behind them, in one system of record.">
+  <link rel="icon" href="/favicon.ico" sizes="48x48">
   <link rel="icon" type="image/png" href="/logo2.png">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..750&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -58,7 +60,9 @@
     }
     .mono { font-family: 'JetBrains Mono', 'SF Mono', Menlo, monospace; }
 
-    .shell { max-width: 1200px; margin: 0 auto; padding: 0 32px; }
+    /* padding-inline only — .hero owns the block axis, and the shorthand
+       would reset it (both classes sit on the same element). */
+    .shell { max-width: 1200px; margin: 0 auto; padding-inline: 32px; }
 
     /* ---- Header ------------------------------------------------------ */
     header {
@@ -251,7 +255,7 @@
       .hero { grid-template-columns: 1fr; gap: 52px; padding-block: 56px 64px; min-height: 0; }
     }
     @media (max-width: 560px) {
-      .shell { padding: 0 20px; }
+      .shell { padding-inline: 20px; }
       .col-tenant { display: none; }
       .toolbar .chips { display: none; }
     }
