@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>XVue — AI-first property management</title>
-  <meta name="description" content="XVue runs the daily operations of a real estate portfolio — leases and rent, vendor bills, maintenance and dispatch — as one system of record.">
+  <title>XVue · AI-first property management</title>
+  <meta name="description" content="XVue runs the daily operations of a real estate portfolio as one system of record: leases and rent, vendor bills, maintenance and dispatch.">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23262220'/%3E%3Ctext x='16' y='22.5' font-family='Helvetica,Arial,sans-serif' font-size='19' font-weight='700' fill='%23faf9f7' text-anchor='middle'%3Ex%3C/text%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -101,7 +101,7 @@
       align-items: center;
       /* padding-block only — .shell owns the horizontal padding */
       padding-block: 48px;
-      min-height: calc(100svh - 145px);
+      min-height: calc(100svh - 61px);
     }
     .statement h1 {
       font-size: clamp(38px, 4.6vw, 58px);
@@ -211,17 +211,6 @@
     .tag.warn { color: var(--warning); background: color-mix(in oklch, var(--warning) 12%, transparent); }
     .tag.bad { color: var(--destructive); background: color-mix(in oklch, var(--destructive) 11%, transparent); }
 
-    /* ---- Footer ------------------------------------------------------ */
-    footer { border-top: 1px solid var(--border); }
-    .footer-row {
-      display: flex; align-items: center; justify-content: space-between;
-      gap: 16px; flex-wrap: wrap;
-      padding-block: 28px;
-      font-size: 13px; color: var(--muted-foreground);
-    }
-    .footer-row nav { display: flex; gap: 22px; }
-    .footer-row a:hover { color: var(--foreground); }
-
     /* ---- Load choreography ------------------------------------------- */
     @media (prefers-reduced-motion: no-preference) {
       .rise { opacity: 0; transform: translateY(10px); animation: rise .6s cubic-bezier(.2,.6,.2,1) forwards; }
@@ -267,7 +256,7 @@
     <section class="shell hero">
       <div class="statement">
         <h1 class="rise">AI&#8209;first property management.</h1>
-        <p class="sub rise"><strong>xvue</strong> runs the daily operations of a real estate portfolio — leases and rent, vendor bills, maintenance and dispatch — as one system of record.</p>
+        <p class="sub rise"><strong>xvue</strong> runs the daily operations of a real estate portfolio as one system of record: leases and rent, vendor bills, maintenance and dispatch.</p>
         <div class="cta-row rise">
           <a class="cta" href="https://app.xvue.ai">
             Open XVue
@@ -349,18 +338,5 @@
 
   </main>
 
-  <footer>
-    <div class="shell footer-row">
-      <span>© <span id="year">2026</span> XVue</span>
-      <nav>
-        <a href="mailto:hello@xvue.ai">hello@xvue.ai</a>
-        <a href="https://app.xvue.ai">Log in</a>
-      </nav>
-    </div>
-  </footer>
-
-  <script>
-    document.getElementById('year').textContent = new Date().getFullYear();
-  </script>
 </body>
 </html>
