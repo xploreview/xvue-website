@@ -3,273 +3,364 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>XVue</title>
-  <meta name="description" content="xvue is a platform unifying property data, digitising workflows, and integrating AI agents to transform real estate management..">
+  <title>XVue — AI-first property management</title>
+  <meta name="description" content="XVue runs the daily operations of a real estate portfolio — leases and rent, vendor bills, maintenance and dispatch — as one system of record.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23262220'/%3E%3Ctext x='16' y='22.5' font-family='Helvetica,Arial,sans-serif' font-size='19' font-weight='700' fill='%23faf9f7' text-anchor='middle'%3Ex%3C/text%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class'
-    }
-  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..750&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
-    :root { --radius: 1rem; }
-    html { 
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
-      scroll-padding-top: 2rem;
+    /* ------------------------------------------------------------------
+       Tokens — lifted verbatim from the product (frontend/src/index.css).
+       The page is set in the app's own material: warm paper, near-black
+       ink, hairline warm borders, status hues used only semantically.
+       ------------------------------------------------------------------ */
+    :root {
+      --background: oklch(0.991 0.0035 84);
+      --card: oklch(0.998 0.0015 84);
+      --foreground: oklch(0.225 0.008 70);
+      --primary: oklch(0.255 0.009 72);
+      --primary-foreground: oklch(0.990 0.003 84);
+      --muted: oklch(0.966 0.004 84);
+      --muted-foreground: oklch(0.555 0.013 74);
+      --accent: oklch(0.955 0.005 84);
+      --border: oklch(0.917 0.006 80);
+      --border-soft: oklch(0.95 0.005 85);
+      --success: oklch(0.515 0.115 152);
+      --warning: oklch(0.560 0.105 80);
+      --destructive: oklch(0.515 0.165 23);
+      --shadow: 0 1px 2px oklch(0.3 0.01 70 / 0.05), 0 8px 32px oklch(0.3 0.01 70 / 0.07);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --background: oklch(0.205 0.005 74);
+        --card: oklch(0.232 0.006 74);
+        --foreground: oklch(0.950 0.004 84);
+        --primary: oklch(0.920 0.012 84);
+        --primary-foreground: oklch(0.220 0.010 74);
+        --muted: oklch(0.262 0.006 74);
+        --muted-foreground: oklch(0.715 0.010 80);
+        --accent: oklch(0.288 0.008 74);
+        --border: oklch(0.300 0.007 74);
+        --border-soft: oklch(0.265 0.006 74);
+        --success: oklch(0.700 0.125 152);
+        --warning: oklch(0.780 0.110 80);
+        --destructive: oklch(0.680 0.160 23);
+        --shadow: 0 1px 2px oklch(0 0 0 / 0.2), 0 8px 32px oklch(0 0 0 / 0.3);
+      }
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+      background: var(--background);
+    }
+    body {
+      background: var(--background);
+      color: var(--foreground);
+      font-size: 15px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+    a:focus-visible, button:focus-visible {
+      outline: 2px solid var(--muted-foreground);
+      outline-offset: 2px;
+      border-radius: 4px;
+    }
+    .mono { font-family: 'JetBrains Mono', 'SF Mono', Menlo, monospace; }
+
+    .shell { max-width: 1200px; margin: 0 auto; padding: 0 32px; }
+
+    /* ---- Header ------------------------------------------------------ */
+    header {
+      border-bottom: 1px solid var(--border);
+    }
+    .header-row {
+      display: flex; align-items: center; justify-content: space-between;
+      height: 60px;
+    }
+    .wordmark {
+      font-size: 21px; font-weight: 700; letter-spacing: -0.045em;
+      line-height: 1;
+    }
+    .login {
+      font-size: 13px; font-weight: 550; color: var(--muted-foreground);
+      padding: 7px 14px; border: 1px solid var(--border); border-radius: 6px;
+      transition: color .15s, border-color .15s, background .15s;
+    }
+    .login:hover { color: var(--foreground); background: var(--accent); }
+
+    /* ---- Hero -------------------------------------------------------- */
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(380px, 5fr) 7fr;
+      gap: 64px;
+      align-items: center;
+      /* padding-block only — .shell owns the horizontal padding */
+      padding-block: 48px;
+      min-height: calc(100svh - 145px);
+    }
+    .statement h1 {
+      font-size: clamp(38px, 4.6vw, 58px);
+      font-weight: 650;
+      letter-spacing: -0.035em;
+      line-height: 1.04;
+      text-wrap: balance;
+    }
+    .statement .sub {
+      margin-top: 22px;
+      max-width: 42ch;
+      font-size: 16px;
+      line-height: 1.55;
+      color: var(--muted-foreground);
+      text-wrap: pretty;
+    }
+    .statement .sub strong { font-weight: 600; color: var(--foreground); }
+    .cta-row { margin-top: 34px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+    .cta {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--primary); color: var(--primary-foreground);
+      font-size: 14px; font-weight: 600;
+      padding: 11px 20px; border-radius: 7px;
+      transition: opacity .15s, transform .15s;
+    }
+    .cta:hover { opacity: .88; }
+    .cta:active { transform: translateY(1px); }
+    .cta svg { transition: transform .18s; }
+    .cta:hover svg { transform: translateX(2px); }
+    .contact {
+      font-size: 14px; font-weight: 500; color: var(--muted-foreground);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 1px;
+      transition: color .15s, border-color .15s;
+    }
+    .contact:hover { color: var(--foreground); border-color: var(--muted-foreground); }
+
+    /* ---- The product sheet (signature element) -----------------------
+       Not a screenshot: the leases work surface re-rendered at the app's
+       real density — 13px type, 40px rows, hairline dividers, status
+       dots, tags only on exceptional states, tabular DKK amounts.
+       Bleeds off the right edge and fades, a working system glimpsed. */
+    .sheet-wrap {
+      position: relative;
+      min-width: 0;
+    }
+    .sheet {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      box-shadow: var(--shadow);
+      font-size: 13px;
+      line-height: 1.4;
+      overflow: hidden;
+      /* The list continues below the fold of the card — fade through the
+         bottom edge rather than close the document. */
+      -webkit-mask-image: linear-gradient(to bottom, black 72%, transparent 99%);
+      mask-image: linear-gradient(to bottom, black 72%, transparent 99%);
+    }
+    .toolbar {
+      display: flex; align-items: center; gap: 10px;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .toolbar .list-name { font-weight: 600; font-size: 14px; letter-spacing: -0.01em; }
+    .toolbar .count { color: var(--muted-foreground); font-size: 13px; }
+    .toolbar .chips { display: flex; gap: 6px; margin-left: 18px; }
+    .chip {
+      font-size: 12px; font-weight: 550;
+      padding: 3px 10px; border-radius: 999px;
+      color: var(--muted-foreground);
+      border: 1px solid transparent;
+    }
+    .chip.on {
+      color: var(--foreground);
+      background: var(--accent);
+      border-color: var(--border);
+    }
+    table { border-collapse: collapse; width: 100%; }
+    thead th {
+      font-size: 11px; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.06em; color: var(--muted-foreground);
+      text-align: left; padding: 9px 16px;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    thead th.num, td.num { text-align: right; }
+    tbody td {
+      height: 40px; padding: 0 16px;
+      border-bottom: 1px solid var(--border-soft);
+      white-space: nowrap;
+      color: var(--muted-foreground);
+    }
+    tbody tr:hover td { background: var(--accent); }
+    tbody tr:last-child td { border-bottom: none; }
+    td.name { color: var(--foreground); font-weight: 550; }
+    td.num { font-variant-numeric: tabular-nums; color: var(--foreground); }
+    .cell { display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; }
+    .dot { width: 7px; height: 7px; border-radius: 999px; flex: none; }
+    .dot.ok { background: var(--success); }
+    .dot.warn { background: var(--warning); }
+    .dot.bad { background: var(--destructive); }
+    .tag {
+      font-size: 11px; font-weight: 550; line-height: 1;
+      padding: 3.5px 7px; border-radius: 5px;
+    }
+    .tag.warn { color: var(--warning); background: color-mix(in oklch, var(--warning) 12%, transparent); }
+    .tag.bad { color: var(--destructive); background: color-mix(in oklch, var(--destructive) 11%, transparent); }
+
+    /* ---- Footer ------------------------------------------------------ */
+    footer { border-top: 1px solid var(--border); }
+    .footer-row {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 16px; flex-wrap: wrap;
+      padding-block: 28px;
+      font-size: 13px; color: var(--muted-foreground);
+    }
+    .footer-row nav { display: flex; gap: 22px; }
+    .footer-row a:hover { color: var(--foreground); }
+
+    /* ---- Load choreography ------------------------------------------- */
+    @media (prefers-reduced-motion: no-preference) {
+      .rise { opacity: 0; transform: translateY(10px); animation: rise .6s cubic-bezier(.2,.6,.2,1) forwards; }
+      .statement h1 { animation-delay: .05s; }
+      .statement .sub { animation-delay: .13s; }
+      .statement .cta-row { animation-delay: .21s; }
+      .sheet-anim { opacity: 0; animation: rise .7s cubic-bezier(.2,.6,.2,1) .25s forwards; }
+      tbody tr { opacity: 0; animation: row-in .45s ease-out forwards; }
+      tbody tr:nth-child(1) { animation-delay: .55s; }
+      tbody tr:nth-child(2) { animation-delay: .61s; }
+      tbody tr:nth-child(3) { animation-delay: .67s; }
+      tbody tr:nth-child(4) { animation-delay: .73s; }
+      tbody tr:nth-child(5) { animation-delay: .79s; }
+      tbody tr:nth-child(6) { animation-delay: .85s; }
+      tbody tr:nth-child(7) { animation-delay: .91s; }
+      tbody tr:nth-child(8) { animation-delay: .97s; }
+      tbody tr:nth-child(9) { animation-delay: 1.03s; }
+      @keyframes rise { to { opacity: 1; transform: translateY(0); } }
+      @keyframes row-in { from { opacity: 0; } to { opacity: 1; } }
+    }
+
+    /* ---- Responsive -------------------------------------------------- */
+    @media (max-width: 980px) {
+      .hero { grid-template-columns: 1fr; gap: 52px; padding-block: 56px 64px; min-height: 0; }
+    }
+    @media (max-width: 560px) {
+      .shell { padding: 0 20px; }
+      .col-tenant { display: none; }
+      .toolbar .chips { display: none; }
     }
   </style>
 </head>
-<body class="min-h-screen bg-neutral-100 dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 selection:bg-neutral-900 selection:text-white dark:selection:bg-neutral-100 dark:selection:text-neutral-900">
-  <header class="sticky top-0 z-50 backdrop-blur supports-[backdrop-filter]:bg-neutral-100/70 dark:supports-[backdrop-filter]:bg-neutral-900/70">
-    <div class="mx-auto max-w-6xl px-4">
-      <div class="flex h-16 items-center justify-between">
-        <a href="#home" class="group inline-flex items-center gap-2">
-          <span class="text-xl font-bold tracking-tight">xvue</span>
-        </a>
-        <nav class="hidden md:flex items-center gap-8 text-sm text-neutral-600 dark:text-neutral-400">
-          <a href="#about" class="hover:text-neutral-900 dark:hover:text-neutral-100">About</a>
-          <a href="#focus" class="hover:text-neutral-900 dark:hover:text-neutral-100">Focus</a>
-          <a href="#team" class="hover:text-neutral-900 dark:hover:text-neutral-100">Team</a>
-        </nav>
-        <div class="flex items-center gap-3">
-          <button id="darkModeToggle" class="p-2 rounded-lg border border-neutral-300 hover:bg-neutral-200 dark:border-neutral-600 dark:hover:bg-neutral-700">
-            <svg id="sunIcon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="dark:hidden"><circle cx="12" cy="12" r="5"></circle><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path></svg>
-            <svg id="moonIcon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hidden dark:block"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-          </button>
-          <a href="mailto:hello@xvue.ai?subject=xvue%20%E2%80%94%20Intro"
-           class="inline-flex items-center gap-2 rounded-xl border border-neutral-300 dark:border-neutral-600 px-4 py-2 text-sm font-medium hover:bg-neutral-900 hover:text-white dark:hover:bg-neutral-100 dark:hover:text-neutral-900">
-          <span>Get in touch</span>
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
-        </a>
-      </div>
+<body>
+
+  <header>
+    <div class="shell header-row">
+      <a href="/" class="wordmark" aria-label="XVue home">xvue</a>
+      <a class="login" href="https://app.xvue.ai">Log in</a>
     </div>
   </header>
 
-  <main id="home">
-    <section class="relative">
-      <div class="mx-auto max-w-6xl px-4 py-16 md:py-24">
-        <div class="max-w-3xl">
-          <h1 class="text-4xl font-black tracking-tight md:text-6xl">
-            AI-First OS<br><span class="bg-gradient-to-br from-neutral-900 to-neutral-600 dark:from-neutral-100 dark:to-neutral-400 bg-clip-text text-transparent">for Real Estate</span>
-          </h1>
-          <p class="mt-6 max-w-xl text-neutral-700 dark:text-neutral-300 md:text-lg">
-            <span class="font-semibold">xvue</span> is a platform unifying property data, digitising workflows, and integrating AI agents to transform real estate management.
-          </p>
-          <div class="mt-8 flex flex-wrap gap-3">
-            <a href="#about" class="inline-flex items-center gap-2 rounded-xl bg-neutral-900 dark:bg-neutral-100 px-5 py-3 text-sm font-semibold text-white dark:text-neutral-900 hover:opacity-90">
-              <span>Learn more</span>
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
-            </a>
-            <a href="mailto:hello@xvue.ai?subject=xvue%20%E2%80%94%20Intro"
-               class="inline-flex items-center gap-2 rounded-xl border border-neutral-300 dark:border-neutral-600 px-5 py-3 text-sm font-semibold text-neutral-900 dark:text-neutral-100 hover:bg-neutral-200 dark:hover:bg-neutral-800">
-              <span>Talk to us</span>
-            </a>
-          </div>
+  <main>
+    <section class="shell hero">
+      <div class="statement">
+        <h1 class="rise">AI&#8209;first property management.</h1>
+        <p class="sub rise"><strong>xvue</strong> runs the daily operations of a real estate portfolio — leases and rent, vendor bills, maintenance and dispatch — as one system of record.</p>
+        <div class="cta-row rise">
+          <a class="cta" href="https://app.xvue.ai">
+            Open XVue
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </a>
+          <a class="contact" href="mailto:hello@xvue.ai">hello@xvue.ai</a>
+        </div>
+      </div>
 
-          <div class="mt-12 flex items-center gap-6 text-sm text-neutral-600 dark:text-neutral-400">
-            <span class="inline-flex items-center gap-2">
-              <svg xmlns="http://www.w3.org/2000/svg" class="opacity-70" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"></path><path d="m9 12 2 2 4-4"></path></svg>
-              Unified data repository
-            </span>
-            <span class="inline-flex items-center gap-2">
-              <svg xmlns="http://www.w3.org/2000/svg" class="opacity-70" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"></path><path d="m9 12 2 2 4-4"></path></svg>
-              Digitised property workflows
-            </span>
-            <span class="inline-flex items-center gap-2">
-              <svg xmlns="http://www.w3.org/2000/svg" class="opacity-70" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"></path><path d="m9 12 2 2 4-4"></path></svg>
-              AI insights and automation
+      <div class="sheet-wrap" aria-hidden="true">
+        <div class="sheet sheet-anim">
+          <div class="toolbar">
+            <span class="list-name">Leases</span><span class="count">128</span>
+            <span class="chips">
+              <span class="chip on">All</span>
+              <span class="chip">Ending soon</span>
+              <span class="chip">Arrears</span>
             </span>
           </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Lease</th>
+                <th class="col-tenant">Tenant</th>
+                <th class="num">Rent / mo</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="name"><span class="cell"><span class="dot ok"></span>Islands Brygge 79, 3. tv</span></td>
+                <td class="col-tenant">Halvorsen ApS</td>
+                <td class="num">DKK 23,400</td>
+              </tr>
+              <tr>
+                <td class="name"><span class="cell"><span class="dot warn"></span>Ryesgade 12, st. <span class="tag warn">Ending soon</span></span></td>
+                <td class="col-tenant">Café Brünnich</td>
+                <td class="num">DKK 41,250</td>
+              </tr>
+              <tr>
+                <td class="name"><span class="cell"><span class="dot ok"></span>Vestergade 4, 1.</span></td>
+                <td class="col-tenant">Møller &amp; Søn A/S</td>
+                <td class="num">DKK 18,900</td>
+              </tr>
+              <tr>
+                <td class="name"><span class="cell"><span class="dot bad"></span>Sortedam Dossering 55 <span class="tag bad">Arrears</span></span></td>
+                <td class="col-tenant">Nordvig Ejendomme</td>
+                <td class="num">DKK 96,000</td>
+              </tr>
+              <tr>
+                <td class="name"><span class="cell"><span class="dot ok"></span>Åboulevard 21, 2. th</span></td>
+                <td class="col-tenant">Studio Weiss</td>
+                <td class="num">DKK 14,750</td>
+              </tr>
+              <tr>
+                <td class="name"><span class="cell"><span class="dot ok"></span>Frederiksgade 9, kld.</span></td>
+                <td class="col-tenant">Bager Lindqvist</td>
+                <td class="num">DKK 9,300</td>
+              </tr>
+              <tr>
+                <td class="name"><span class="cell"><span class="dot ok"></span>Njalsgade 17A</span></td>
+                <td class="col-tenant">Koppel Logistik</td>
+                <td class="num">DKK 52,600</td>
+              </tr>
+              <tr>
+                <td class="name"><span class="cell"><span class="dot ok"></span>Guldbergsgade 30, 2.</span></td>
+                <td class="col-tenant">Atelier Rung</td>
+                <td class="num">DKK 12,200</td>
+              </tr>
+              <tr>
+                <td class="name"><span class="cell"><span class="dot ok"></span>Amagerbrogade 108</span></td>
+                <td class="col-tenant">Klinik Søholm</td>
+                <td class="num">DKK 27,800</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </section>
 
-    <section id="about">
-      <div class="mx-auto max-w-6xl px-4 py-12">
-        <div class="grid gap-10 md:grid-cols-2 md:gap-16">
-          <div>
-            <h2 class="text-2xl font-bold tracking-tight">What we're building</h2>
-            <p class="mt-4 text-neutral-700 dark:text-neutral-300">
-              A unified platform that is the source of truth for all real estate data, facilitating lease administration, property management, and financial analytics. AI agents integrate with workflows to resolve issues, manage contracts, and unlock insights.
-            </p>
-            <ul class="mt-6 space-y-3 text-neutral-700 dark:text-neutral-300">
-              <li class="flex items-start gap-3">
-                <svg xmlns="http://www.w3.org/2000/svg" class="mt-[0.2rem]" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27,6.96 12,12.01 20.73,6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
-                Centralised database for properties, leases, and tenants
-              </li>
-              <li class="flex items-start gap-3">
-                <svg xmlns="http://www.w3.org/2000/svg" class="mt-[0.2rem]" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
-                Digital workflows with automated processes
-              </li>
-              <li class="flex items-start gap-3">
-                <svg xmlns="http://www.w3.org/2000/svg" class="mt-[0.2rem]" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22,4 12,14.01 9,11.01"></polyline></svg>
-                AI agents and IoT integration for predictive analytics
-              </li>
-            </ul>
-          </div>
-          <div class="rounded-2xl border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-800 p-6 shadow-sm">
-            <h3 class="text-lg">Why <span class="font-semibold">xvue</span>?</h3>
-            <p class="mt-4 text-neutral-700 dark:text-neutral-300">
-              Real estate operations are fragmented across spreadsheets, legacy systems and error-prone manual processes. xvue brings everything into one intelligent platform.
-            </p>
-            <div class="mt-6 space-y-3 text-sm text-neutral-700 dark:text-neutral-300">
-              <div class="flex items-center gap-2">
-                <div class="h-1.5 w-1.5 rounded-full bg-neutral-400"></div>
-                <span>Single source of truth for all data</span>
-              </div>
-              <div class="flex items-center gap-2">
-                <div class="h-1.5 w-1.5 rounded-full bg-neutral-400"></div>
-                <span>AI-powered insights and automation</span>
-              </div>
-              <div class="flex items-center gap-2">
-                <div class="h-1.5 w-1.5 rounded-full bg-neutral-400"></div>
-                <span>Built for modern real estate workflows</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="focus">
-      <div class="mx-auto max-w-6xl px-4 py-12">
-        <h2 class="text-2xl font-bold tracking-tight md:text-3xl">Our focus</h2>
-        <div class="mt-8 grid gap-3 md:gap-5 md:grid-cols-3">
-          <div class="rounded-2xl border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-800 p-6 shadow-sm">
-            <h3 class="text-md font-semibold">Property & lease management</h3>
-            <p class="mt-2 text-sm text-neutral-700 dark:text-neutral-300">Centralised database with automated workflows for onboarding, renewals, and exits. Digitised contracts and seamless issue resolution.</p>
-          </div>
-          <div class="rounded-2xl border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-800 p-6 shadow-sm">
-            <h3 class="text-md font-semibold">Services and ticket management</h3>
-            <p class="mt-2 text-sm text-neutral-700 dark:text-neutral-300">All property issues and services (repairs, maintenance, utilities) created, tracked, and resolved within the platform.</p>
-          </div>
-          <div class="rounded-2xl border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-800 p-6 shadow-sm">
-            <h3 class="text-md font-semibold">Digitised workflows & AI integration</h3>
-            <p class="mt-2 text-sm text-neutral-700 dark:text-neutral-300">Automated property workflows with intelligent monitoring. AI agents for streamlined processes, insights, and decision support.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="team">
-      <div class="mx-auto max-w-6xl px-4 py-12">
-        <h2 class="text-2xl font-bold tracking-tight md:text-3xl">Team</h2>
-        <div class="mt-8 space-y-0">
-          <div class="group flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-neutral-200 dark:border-neutral-700 py-4 gap-2 sm:gap-0">
-            <div class="flex items-center gap-3">
-              <div class="h-10 w-10 min-w-10 rounded-full bg-gradient-to-br from-neutral-900 to-neutral-700 flex items-center justify-center flex-shrink-0">
-                <span class="text-white font-medium text-xs">DP</span>
-              </div>
-              <div>
-                <h3 class="font-semibold">Dhruv Pattem</h3>
-                <p class="text-xs text-neutral-500 dark:text-neutral-400">CS @ University of Cambridge</p>
-              </div>
-            </div>
-            <div class="sm:text-right ml-[52px] sm:ml-0">
-              <span class="text-xs text-neutral-500 dark:text-neutral-400 font-medium">Co-Founder, Software & AI</span>
-            </div>
-          </div>
-          <div class="group flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-neutral-200 dark:border-neutral-700 py-4 gap-2 sm:gap-0">
-            <div class="flex items-center gap-3">
-              <div class="h-10 w-10 min-w-10 rounded-full bg-gradient-to-br from-neutral-900 to-neutral-700 flex items-center justify-center flex-shrink-0">
-                <span class="text-white font-medium text-xs">MG</span>
-              </div>
-              <div>
-                <h3 class="font-semibold">Mangal Deep Gupta</h3>
-                <p class="text-xs text-neutral-500 dark:text-neutral-400">10+ years of experience in software engineering across startups</p>
-              </div>
-            </div>
-            <div class="sm:text-right ml-[52px] sm:ml-0">
-              <span class="text-xs text-neutral-500 dark:text-neutral-400 font-medium">Software Lead</span>
-            </div>
-          </div>
-          <div class="group flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-neutral-200 dark:border-neutral-700 py-4 gap-2 sm:gap-0">
-            <div class="flex items-center gap-3">
-              <div class="h-10 w-10 min-w-10 rounded-full bg-gradient-to-br from-neutral-900 to-neutral-700 flex items-center justify-center flex-shrink-0">
-                <span class="text-white font-medium text-xs">XJ</span>
-              </div>
-              <div>
-                <h3 class="font-semibold">Xieen Ji</h3>
-                <p class="text-xs text-neutral-500 dark:text-neutral-400">Situated Practice @ UCL Bartlett Architecture MA, Beijing University of Chemical Technology BA</p>
-              </div>
-            </div>
-            <div class="sm:text-right ml-[52px] sm:ml-0">
-              <span class="text-xs text-neutral-500 dark:text-neutral-400 font-medium">Design, Property Services</span>
-            </div>
-          </div>
-          <div class="group flex flex-col sm:flex-row sm:items-center sm:justify-between py-4 gap-2 sm:gap-0">
-            <div class="flex items-center gap-3">
-              <div class="h-10 w-10 min-w-10 rounded-full bg-gradient-to-br from-neutral-900 to-neutral-700 flex items-center justify-center flex-shrink-0">
-                <span class="text-white font-medium text-xs">PP</span>
-              </div>
-              <div>
-                <h3 class="font-semibold">Pradeep Pattem</h3>
-                <p class="text-xs text-neutral-500 dark:text-neutral-400">CEO of Park Street A/S • Ex-Head of Mortgage & Credit Markets, Europe & Asia</p>
-              </div>
-            </div>
-            <div class="sm:text-right ml-[52px] sm:ml-0">
-              <span class="text-xs text-neutral-500 dark:text-neutral-400 font-medium">Co-Founder, Product Design</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
   </main>
 
-  <footer class="border-t border-neutral-300 dark:border-neutral-700 py-8">
-    <div class="mx-auto max-w-6xl px-4 text-sm text-neutral-500 dark:text-neutral-400">
-      <div class="flex flex-col items-center justify-between gap-3 md:flex-row">
-        <p>© <span id="year"></span> XVue. All rights reserved.</p>
-        <div class="flex items-center gap-4">
-          <a href="#" class="hover:text-neutral-900 dark:hover:text-neutral-100">Privacy</a>
-          <a href="#" class="hover:text-neutral-900 dark:hover:text-neutral-100">Terms</a>
-        </div>
-      </div>
+  <footer>
+    <div class="shell footer-row">
+      <span>© <span id="year">2026</span> XVue</span>
+      <nav>
+        <a href="mailto:hello@xvue.ai">hello@xvue.ai</a>
+        <a href="https://app.xvue.ai">Log in</a>
+      </nav>
     </div>
   </footer>
 
   <script>
-    // Set current year
     document.getElementById('year').textContent = new Date().getFullYear();
-    
-    // Dark mode functionality
-    const darkModeToggle = document.getElementById('darkModeToggle');
-    const html = document.documentElement;
-    
-    // Check for saved theme preference or use system preference
-    const savedTheme = localStorage.getItem('theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    
-    if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
-      html.classList.add('dark');
-    } else if (savedTheme === 'light') {
-      html.classList.remove('dark');
-    }
-    
-    // Listen for system theme changes
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-      if (!localStorage.getItem('theme')) {
-        if (e.matches) {
-          html.classList.add('dark');
-        } else {
-          html.classList.remove('dark');
-        }
-      }
-    });
-    
-    // Toggle dark mode
-    darkModeToggle.addEventListener('click', () => {
-      html.classList.toggle('dark');
-      
-      // Save preference
-      if (html.classList.contains('dark')) {
-        localStorage.setItem('theme', 'dark');
-      } else {
-        localStorage.setItem('theme', 'light');
-      }
-    });
   </script>
 </body>
 </html>
